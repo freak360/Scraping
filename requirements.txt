@@ -1,0 +1,4 @@
+selenium
+undetected-chrome
+pandas
+openpyxl
