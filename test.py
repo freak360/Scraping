@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
+import time
 
 # Setup Undetected Chromedriver
 options = uc.ChromeOptions()
@@ -12,34 +13,57 @@ options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) Apple
 driver = uc.Chrome(options=options)
 
 url = 'http://fastpeoplesearch.com'
-driver.get(url)
-wait = WebDriverWait(driver, 20)
+
+
+# List of addresses to search
+addresses = [
+    ('321 main st', 'Philadelphia PA 19143'),
+    ('13382 NW Copper Creek Dr', 'Port Saint Lucie, FL 34987'),
+    ('8124 Forest Glen Dr', 'Pasadena, MD 21122')  # Add more addresses as needed
+]
 
 data = []
 
 try:
-    option_to_select = wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[1]/ul/li[3]/a")))
-    option_to_select.click()
+    for street, city_state in addresses:
+        print(f"Searching for: {street}, {city_state}")  # Debug print
+        
+        driver.get(url)
+        wait = WebDriverWait(driver, 20)  # Navigate back to the homepage for each search
+        wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[1]/ul/li[3]/a"))).click()
 
-    search_box = wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[2]/div[3]/form/div[1]/input")))
-    search_box.send_keys('321 main st')
+        search_box = wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[2]/div[3]/form/div[1]/input")))
+        search_box.clear()
+        search_box.send_keys(street)
 
-    search_box2 = wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[2]/div[3]/form/div[2]/input")))
-    search_box2.send_keys('Philadelphia PA 19143')
+        search_box2 = wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[2]/div[3]/form/div[2]/input")))
+        search_box2.clear()
+        search_box2.send_keys(city_state)
+        search_box2.send_keys(Keys.RETURN)
 
-    search_box2.send_keys(Keys.RETURN)
+        # Wait for search results to be visible
+        wait.until(EC.presence_of_all_elements_located((By.XPATH, '/html/body/div[4]/div/div[1]/div[2]/div[1]')))
+        results = driver.find_elements(By.XPATH, '/html/body/div[4]/div/div[1]/div[2]/div[1]')
 
-    # Wait for search results to be visible
-    wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'larger')))
-    results = driver.find_elements(By.XPATH, '//*[@id="G-1500406130705278383"]/div')
+        for result in results:
+            try:
+                name = result.find_element(By.XPATH, './div/h2/a/span[1]').text
+            except:
+                name = result.find_element(By.XPATH, '/html/body/div[4]/div/div[1]/div[3]/div[1]/div/h2/a/span[1]').text
+            
+            try:
+                address = result.find_element(By.XPATH, './div/div[1]/strong/a').text
+            except:
+                address = result.find_element(By.XPATH, '/html/body/div[4]/div/div[1]/div[3]/div[1]/div/div[1]/strong/a').text
 
-    for result in results:
-        name = result.find_element(By.CLASS_NAME, 'larger').text
-        address = result.find_element(By.XPATH, './div[1]/strong/a').text
-        number = result.find_element(By.CLASS_NAME, 'nowrap').text
-        # Example of using .get_attribute to fetch hidden text
-          # Adjust class name as per actual HTML structure
-        data.append({'Name': name, 'Address': address, 'Number': number})
+            try:
+                number = result.find_element(By.XPATH, './div/strong/a').text
+            except:
+                number = result.find_element(By.XPATH, '/html/body/div[4]/div/div[1]/div[3]/div[1]/div/strong/a').text
+
+            data.append({'Name': name, 'Address': address, 'Number': number})
+        
+        time.sleep(2)  # Sleep to avoid too rapid requests
 
 finally:
     driver.quit()
