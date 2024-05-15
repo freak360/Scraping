@@ -2,3 +2,4 @@ selenium
 undetected-chrome
 pandas
 openpyxl
+bs4

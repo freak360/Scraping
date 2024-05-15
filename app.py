@@ -15,6 +15,7 @@ driver = uc.Chrome(options=options)
 url = 'http://fastpeoplesearch.com'
 wait = WebDriverWait(driver, 20)
 
+
 # List of addresses to search
 addresses = [
     ('321 main st', 'Philadelphia PA 19143'),

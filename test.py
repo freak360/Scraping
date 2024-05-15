@@ -13,14 +13,12 @@ options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) Apple
 driver = uc.Chrome(options=options)
 
 url = 'http://fastpeoplesearch.com'
+wait = WebDriverWait(driver, 20)
 
-
-# List of addresses to search
-addresses = [
-    ('321 main st', 'Philadelphia PA 19143'),
-    ('13382 NW Copper Creek Dr', 'Port Saint Lucie, FL 34987'),
-    ('8124 Forest Glen Dr', 'Pasadena, MD 21122')  # Add more addresses as needed
-]
+# Read addresses from Excel
+input_file = 'addresses.xlsx'  # Make sure the file name matches your actual file
+df_addresses = pd.read_excel(input_file)
+addresses = list(zip(df_addresses['Street'], df_addresses['City_State']))
 
 data = []
 
@@ -29,7 +27,6 @@ try:
         print(f"Searching for: {street}, {city_state}")  # Debug print
         
         driver.get(url)
-        wait = WebDriverWait(driver, 20)  # Navigate back to the homepage for each search
         wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[1]/ul/li[3]/a"))).click()
 
         search_box = wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[2]/div[3]/form/div[1]/input")))
@@ -46,20 +43,26 @@ try:
         results = driver.find_elements(By.XPATH, '/html/body/div[4]/div/div[1]/div[2]/div[1]')
 
         for result in results:
-            try:
-                name = result.find_element(By.XPATH, './div/h2/a/span[1]').text
-            except:
-                name = result.find_element(By.XPATH, '/html/body/div[4]/div/div[1]/div[3]/div[1]/div/h2/a/span[1]').text
-            
-            try:
-                address = result.find_element(By.XPATH, './div/div[1]/strong/a').text
-            except:
-                address = result.find_element(By.XPATH, '/html/body/div[4]/div/div[1]/div[3]/div[1]/div/div[1]/strong/a').text
+            elements = result.find_elements(By.XPATH, './div/h2/a/span[1]')
+            if elements:
+                name = elements[0].text
+            else:
+                elements = result.find_elements(By.XPATH, '/html/body/div[4]/div/div[1]/div[3]/div[1]/div/h2/a/span[1]')
+                name = elements[0].text if elements else None
 
-            try:
-                number = result.find_element(By.XPATH, './div/strong/a').text
-            except:
-                number = result.find_element(By.XPATH, '/html/body/div[4]/div/div[1]/div[3]/div[1]/div/strong/a').text
+            elements = result.find_elements(By.XPATH, './div/div[1]/strong/a')
+            if elements:
+                address = elements[0].text
+            else:
+                elements = result.find_elements(By.XPATH, '/html/body/div[4]/div/div[1]/div[3]/div[1]/div/div[1]/strong/a')
+                address = elements[0].text if elements else None
+
+            elements = result.find_elements(By.XPATH, './div/strong/a')
+            if elements:
+                number = elements[0].text
+            else:
+                elements = result.find_elements(By.XPATH, '/html/body/div[4]/div/div[1]/div[3]/div[1]/div/strong/a')
+                number = elements[0].text if elements else None
 
             data.append({'Name': name, 'Address': address, 'Number': number})
         
