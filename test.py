@@ -32,7 +32,7 @@ try:
             wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[1]/ul/li[3]/a"))).click()
             search_box = wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[2]/div[3]/form/div[1]/input")))
         except:
-            print("Exception occured!! Refreshing for the next address.")
+            print("Exception occurred!! Refreshing for the next address.")
             continue
 
         search_box.clear()
@@ -41,12 +41,13 @@ try:
             wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[1]/ul/li[3]/a"))).click()
             search_box2 = wait.until(EC.element_to_be_clickable((By.XPATH, "//html/body/section[1]/div[4]/div[2]/div[3]/form/div[2]/input")))
         except:
-            print("Exception occured!! Refreshing for the next address.")
+            print("Exception occurred!! Refreshing for the next address.")
             continue
         
         search_box2.clear()
         search_box2.send_keys(city_state)
         search_box2.send_keys(Keys.RETURN)
+
 
         # XPaths for different divs
         xpaths = [
