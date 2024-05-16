@@ -15,14 +15,10 @@ driver = uc.Chrome(options=options)
 url = 'http://fastpeoplesearch.com'
 wait = WebDriverWait(driver, 20)
 
-
-# List of addresses to search
-addresses = [
-    ('321 main st', 'Philadelphia PA 19143'),
-    ('13382 NW Copper Creek Dr', 'Port Saint Lucie, FL 34987'),
-    ('8124 Forest Glen Dr', 'Pasadena, MD 21122'),
-    ('ward 1', 'Fatehpur')  # Add more addresses as needed
-]
+# Read addresses from Excel
+input_file = 'addresses.xlsx'  # Make sure the file name matches your actual file
+df_addresses = pd.read_excel(input_file)
+addresses = list(zip(df_addresses['Street'], df_addresses['City_State']))
 
 data = []
 
