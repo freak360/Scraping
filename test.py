@@ -45,7 +45,12 @@ try:
             '/html/body/div[4]/div/div[1]/div[3]/div[4]/div[1]',
             '/html/body/div[4]/div/div[1]/div[3]/div[6]/div[1]',
             '/html/body/div[4]/div/div[1]/div[3]/div[8]/div[1]',
-            '/html/body/div[4]/div/div[1]/div[3]/div[10]/div[1]'
+            '/html/body/div[4]/div/div[1]/div[3]/div[10]/div[1]',
+            '/html/body/div[4]/div/div[1]/div[3]/div[11]/div[1]',
+            '/html/body/div[4]/div/div[1]/div[3]/div[12]/div[1]',
+            '/html/body/div[4]/div/div[1]/div[3]/div[13]/div[1]',
+            '/html/body/div[4]/div/div[1]/div[3]/div[14]/div[1]',
+            '/html/body/div[4]/div/div[1]/div[3]/div[15]/div[1]'
         ]
 
         for xpath in xpaths:
