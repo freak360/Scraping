@@ -17,7 +17,7 @@ url = 'http://fastpeoplesearch.com'
 wait = WebDriverWait(driver, 5)
 
 # Read addresses from Excel
-input_file = 'new_add.xlsx'
+input_file = 'adresses (1).xlsx'
 df_addresses = pd.read_excel(input_file)
 addresses = list(zip(df_addresses['Street'], df_addresses['City_State']))
 
@@ -53,7 +53,9 @@ try:
         xpaths = [
             '/html/body/div[4]/div/div[1]/div[3]/div[1]/div[1]',
             '/html/body/div[4]/div/div[1]/div[3]/div[4]/div[1]',
+            '/html/body/div[4]/div/div[1]/div[3]/div[5]/div[1]',
             '/html/body/div[4]/div/div[1]/div[3]/div[6]/div[1]',
+            '/html/body/div[4]/div/div[1]/div[3]/div[7]/div[1]',
             '/html/body/div[4]/div/div[1]/div[3]/div[8]/div[1]',
             '/html/body/div[4]/div/div[1]/div[3]/div[9]/div[1]',
             '/html/body/div[4]/div/div[1]/div[3]/div[10]/div[1]',
@@ -83,5 +85,5 @@ finally:
 df = pd.DataFrame(data)
 
 # Save to Excel
-df.to_excel('output2.xlsx', index=False)
+df.to_excel('output3.xlsx', index=False)
 print('Data has been saved to Excel.')
