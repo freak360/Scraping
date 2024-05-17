@@ -43,11 +43,15 @@ try:
         except:
             print("Exception occurred!! Refreshing for the next address.")
             continue
-        
+
         search_box2.clear()
         search_box2.send_keys(city_state)
-        search_box2.send_keys(Keys.RETURN)
-
+        
+        try:
+            search_box2.send_keys(Keys.RETURN)
+        except TimeoutException:
+            print(f"Timeout occurred while searching for {street}, {city_state}. Moving to the next address.")
+            continue
 
         # XPaths for different divs
         xpaths = [
